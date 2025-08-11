@@ -1,24 +1,19 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { CheckSquare, LogOut, User } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import DarkModeToggle from '../DarkModeToggle/DarkModeToggle';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { CheckSquare, LogOut, User } from "lucide-react";
+import { useAuth } from "../../context/AuthProvider";
+import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout } = useAuth();
+  const isAuthenticated = !!user;
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
-
-  const navItems = [
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Calendar', path: '/calendar' },
-  ];
 
   return (
     <motion.nav
@@ -36,33 +31,16 @@ const Navigation = () => {
             </span>
           </Link>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            {isAuthenticated && navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  location.pathname === item.path
-                    ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
           {/* Right Side */}
           <div className="flex items-center space-x-4">
             <DarkModeToggle />
-            
+
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                   <span className="text-sm text-gray-700 dark:text-gray-300">
-                    {user?.email || 'User'}
+                    {user?.email || "User"}
                   </span>
                 </div>
                 <button

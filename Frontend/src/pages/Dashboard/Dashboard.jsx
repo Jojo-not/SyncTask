@@ -1,27 +1,31 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Search, Filter } from 'lucide-react';
-import { useTaskContext } from '../../context/TaskContext';
-import { useAuth } from '../../context/AuthContext';
-import TaskCard from '../../components/TaskCard/TaskCard';
-import TaskForm from '../../components/TaskForm/TaskForm';
-import Modal from '../../components/Modal/Modal';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Plus, Search, Filter } from "lucide-react";
+import { useTaskContext } from "../../context/TaskContext";
+import { useAuth } from "../../context/AuthProvider";
+import TaskCard from "../../components/TaskCard/TaskCard";
+import TaskForm from "../../components/TaskForm/TaskForm";
+import Modal from "../../components/Modal/Modal";
 
 const Dashboard = () => {
-  const { tasks, addTask, updateTask, deleteTask, markAsComplete } = useTaskContext();
+  const { tasks, addTask, updateTask, deleteTask, markAsComplete } =
+    useTaskContext();
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterPriority, setFilterPriority] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterPriority, setFilterPriority] = useState("all");
 
-  const filteredTasks = tasks.filter(task => {
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || task.status === filterStatus;
-    const matchesPriority = filterPriority === 'all' || task.priority === filterPriority;
-    
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      filterStatus === "all" || task.status === filterStatus;
+    const matchesPriority =
+      filterPriority === "all" || task.priority === filterPriority;
+
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
@@ -47,9 +51,9 @@ const Dashboard = () => {
 
   const taskStats = {
     total: tasks.length,
-    completed: tasks.filter(t => t.status === 'completed').length,
-    pending: tasks.filter(t => t.status === 'pending').length,
-    inProgress: tasks.filter(t => t.status === 'in-progress').length,
+    completed: tasks.filter((t) => t.status === "completed").length,
+    pending: tasks.filter((t) => t.status === "pending").length,
+    inProgress: tasks.filter((t) => t.status === "in-progress").length,
   };
 
   return (
@@ -61,7 +65,7 @@ const Dashboard = () => {
         className="mb-8"
       >
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Welcome back, {user?.name || 'User'}!
+          Welcome back, {user?.name || "User"}!
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
           Here's what's happening with your tasks today.
@@ -76,12 +80,35 @@ const Dashboard = () => {
         className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
       >
         {[
-          { label: 'Total Tasks', value: taskStats.total, color: 'bg-primary-500', icon: '📝' },
-          { label: 'Completed', value: taskStats.completed, color: 'bg-success-500', icon: '✅' },
-          { label: 'In Progress', value: taskStats.inProgress, color: 'bg-warning-500', icon: '🚀' },
-          { label: 'Pending', value: taskStats.pending, color: 'bg-error-500', icon: '⏳' },
+          {
+            label: "Total Tasks",
+            value: taskStats.total,
+            color: "bg-primary-500",
+            icon: "📝",
+          },
+          {
+            label: "Completed",
+            value: taskStats.completed,
+            color: "bg-success-500",
+            icon: "✅",
+          },
+          {
+            label: "In Progress",
+            value: taskStats.inProgress,
+            color: "bg-warning-500",
+            icon: "🚀",
+          },
+          {
+            label: "Pending",
+            value: taskStats.pending,
+            color: "bg-error-500",
+            icon: "⏳",
+          },
         ].map((stat, index) => (
-          <div key={stat.label} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div
+            key={stat.label}
+            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
@@ -91,7 +118,9 @@ const Dashboard = () => {
                   {stat.value}
                 </p>
               </div>
-              <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center text-white text-xl`}>
+              <div
+                className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center text-white text-xl`}
+              >
                 {stat.icon}
               </div>
             </div>
@@ -118,7 +147,7 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        
+
         <div className="flex space-x-4">
           <select
             value={filterStatus}
@@ -130,7 +159,7 @@ const Dashboard = () => {
             <option value="in-progress">In Progress</option>
             <option value="completed">Completed</option>
           </select>
-          
+
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
@@ -141,7 +170,7 @@ const Dashboard = () => {
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
-          
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -184,14 +213,16 @@ const Dashboard = () => {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <div className="text-gray-400 dark:text-gray-500 text-6xl mb-4">📝</div>
+          <div className="text-gray-400 dark:text-gray-500 text-6xl mb-4">
+            📝
+          </div>
           <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
             No tasks found
           </h3>
           <p className="text-gray-500 dark:text-gray-400 mb-6">
-            {searchTerm || filterStatus !== 'all' || filterPriority !== 'all'
-              ? 'Try adjusting your search or filters'
-              : 'Create your first task to get started'}
+            {searchTerm || filterStatus !== "all" || filterPriority !== "all"
+              ? "Try adjusting your search or filters"
+              : "Create your first task to get started"}
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -208,7 +239,7 @@ const Dashboard = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={editingTask ? 'Edit Task' : 'Create New Task'}
+        title={editingTask ? "Edit Task" : "Create New Task"}
       >
         <TaskForm
           task={editingTask}

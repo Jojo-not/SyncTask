@@ -1,30 +1,36 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  FolderOpen, 
-  Settings, 
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  LayoutDashboard,
+  Calendar,
+  FolderOpen,
+  Settings,
   ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+  ChevronRight,
+} from "lucide-react";
+import { useAuth } from "../../context/AuthProvider";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
 
-  if (!isAuthenticated || location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup') {
+  if (
+    !isAuthenticated ||
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/signup"
+  ) {
     return null;
   }
 
   const sidebarItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-    { icon: Calendar, label: 'Calendar', path: '/calendar' },
-    { icon: FolderOpen, label: 'Projects', path: '/projects' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: Calendar, label: "Calendar", path: "/calendar" },
+    { icon: FolderOpen, label: "Projects", path: "/projects" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   return (
@@ -41,7 +47,11 @@ const Sidebar = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 ml-auto block"
           >
-            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            {isCollapsed ? (
+              <ChevronRight className="h-5 w-5" />
+            ) : (
+              <ChevronLeft className="h-5 w-5" />
+            )}
           </motion.button>
         </div>
 
@@ -50,15 +60,15 @@ const Sidebar = () => {
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             return (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors duration-200 ${
                   isActive
-                    ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? "bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />

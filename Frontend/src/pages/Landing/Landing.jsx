@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { CheckSquare, ArrowRight, Clock, Users, Zap } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { CheckSquare, ArrowRight, Clock, Users, Zap } from "lucide-react";
+import { useAuth } from "../../context/AuthProvider";
 
 const Landing = () => {
   const { isAuthenticated } = useAuth();
@@ -9,24 +9,25 @@ const Landing = () => {
   const features = [
     {
       icon: CheckSquare,
-      title: 'Task Management',
-      description: 'Organize and track your tasks with powerful management tools'
+      title: "Task Management",
+      description:
+        "Organize and track your tasks with powerful management tools",
     },
     {
       icon: Clock,
-      title: 'Time Tracking',
-      description: 'Monitor time spent on projects and improve productivity'
+      title: "Time Tracking",
+      description: "Monitor time spent on projects and improve productivity",
     },
     {
       icon: Users,
-      title: 'Team Collaboration',
-      description: 'Work together seamlessly with your team members'
+      title: "Team Collaboration",
+      description: "Work together seamlessly with your team members",
     },
     {
       icon: Zap,
-      title: 'Lightning Fast',
-      description: 'Built for speed and efficiency to keep you productive'
-    }
+      title: "Lightning Fast",
+      description: "Built for speed and efficiency to keep you productive",
+    },
   ];
 
   return (
@@ -45,12 +46,14 @@ const Landing = () => {
               <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6">
                 Sync Your
                 <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                  {' '}Tasks
+                  {" "}
+                  Tasks
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                The ultimate task management solution that helps you stay organized, 
-                collaborate effectively, and achieve your goals faster than ever.
+                The ultimate task management solution that helps you stay
+                organized, collaborate effectively, and achieve your goals
+                faster than ever.
               </p>
             </motion.div>
 
@@ -61,7 +64,7 @@ const Landing = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
             >
               <Link
-                to={isAuthenticated ? '/dashboard' : '/signup'}
+                to={isAuthenticated ? "/dashboard" : "/signup"}
                 className="group inline-flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 <span>Get Started</span>
@@ -89,7 +92,12 @@ const Landing = () => {
                       <motion.div
                         key={i}
                         animate={{ y: [0, -10, 0] }}
-                        transition={{ duration: 2, delay: i * 0.2, repeat: Infinity, repeatType: 'reverse' }}
+                        transition={{
+                          duration: 2,
+                          delay: i * 0.2,
+                          repeat: Infinity,
+                          repeatType: "reverse",
+                        }}
                         className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg"
                       >
                         <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
@@ -119,8 +127,8 @@ const Landing = () => {
               Everything you need to stay productive
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Powerful features designed to help you manage tasks, collaborate with teams, 
-              and achieve your goals more efficiently.
+              Powerful features designed to help you manage tasks, collaborate
+              with teams, and achieve your goals more efficiently.
             </p>
           </motion.div>
 
@@ -163,10 +171,11 @@ const Landing = () => {
               Ready to transform your productivity?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of users who have already streamlined their workflow with SyncTask.
+              Join thousands of users who have already streamlined their
+              workflow with SyncTask.
             </p>
             <Link
-              to={isAuthenticated ? '/dashboard' : '/signup'}
+              to={isAuthenticated ? "/dashboard" : "/signup"}
               className="inline-flex items-center space-x-2 bg-white text-primary-600 hover:text-primary-700 px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <span>Start Your Journey</span>

@@ -1,57 +1,56 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, CheckSquare, User } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Mail, Lock, Eye, EyeOff, CheckSquare, User } from "lucide-react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     } else if (formData.name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = "Name must be at least 2 characters";
     }
-    
+
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
-    
+
     if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -62,16 +61,32 @@ const Signup = () => {
     e.preventDefault();
     if (validateForm()) {
       setIsLoading(true);
-      
-      // Simulate API call
-      setTimeout(() => {
-        signup({
-          name: formData.name,
-          email: formData.email,
-        });
+
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/register",
+          {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            password_confirmation: formData.confirmPassword,
+          }
+        );
+
+        toast.success("Account created successfully!");
+        navigate("/login");
+      } catch (error) {
+        if (error.response && error.response.data.errors) {
+          setErrors(error.response.data.errors);
+          // Show first error message as toast
+          const firstError = Object.values(error.response.data.errors)[0];
+          toast.error(firstError[0]);
+        } else {
+          toast.error("Registration failed. Please try again.");
+        }
+      } finally {
         setIsLoading(false);
-        navigate('/dashboard');
-      }, 1000);
+      }
     }
   };
 
@@ -91,14 +106,16 @@ const Signup = () => {
           >
             <div className="flex items-center space-x-2">
               <CheckSquare className="h-12 w-12 text-primary-600 dark:text-primary-400" />
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">SyncTask</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                SyncTask
+              </span>
             </div>
           </motion.div>
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Or{' '}
+            Or{" "}
             <Link
               to="/login"
               className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
@@ -117,7 +134,10 @@ const Signup = () => {
         >
           <div className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Full name
               </label>
               <div className="relative">
@@ -130,7 +150,9 @@ const Signup = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors duration-200 ${
-                    errors.name ? 'border-error-500' : 'border-gray-300 dark:border-gray-600'
+                    errors.name
+                      ? "border-error-500"
+                      : "border-gray-300 dark:border-gray-600"
                   }`}
                   placeholder="Enter your full name"
                 />
@@ -147,7 +169,10 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Email address
               </label>
               <div className="relative">
@@ -160,7 +185,9 @@ const Signup = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors duration-200 ${
-                    errors.email ? 'border-error-500' : 'border-gray-300 dark:border-gray-600'
+                    errors.email
+                      ? "border-error-500"
+                      : "border-gray-300 dark:border-gray-600"
                   }`}
                   placeholder="Enter your email"
                 />
@@ -177,7 +204,10 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -185,12 +215,14 @@ const Signup = () => {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   value={formData.password}
                   onChange={handleChange}
                   className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors duration-200 ${
-                    errors.password ? 'border-error-500' : 'border-gray-300 dark:border-gray-600'
+                    errors.password
+                      ? "border-error-500"
+                      : "border-gray-300 dark:border-gray-600"
                   }`}
                   placeholder="Create a password"
                 />
@@ -199,7 +231,11 @@ const Signup = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
               {errors.password && (
@@ -214,7 +250,10 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Confirm password
               </label>
               <div className="relative">
@@ -222,12 +261,14 @@ const Signup = () => {
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   autoComplete="new-password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors duration-200 ${
-                    errors.confirmPassword ? 'border-error-500' : 'border-gray-300 dark:border-gray-600'
+                    errors.confirmPassword
+                      ? "border-error-500"
+                      : "border-gray-300 dark:border-gray-600"
                   }`}
                   placeholder="Confirm your password"
                 />
@@ -236,7 +277,11 @@ const Signup = () => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
               {errors.confirmPassword && (
@@ -265,7 +310,7 @@ const Signup = () => {
                   <span>Creating account...</span>
                 </div>
               ) : (
-                'Create account'
+                "Create account"
               )}
             </motion.button>
           </div>
