@@ -13,6 +13,7 @@ import Landing from "./pages/Landing/Landing";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Calendar from "./pages/Calendar/Calendar";
 import Login from "./pages/Login/Login";
+import AuthRedirect from "./context/AuthRedirect";
 import Signup from "./pages/Signup/Signup";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -57,8 +58,10 @@ function AppContent() {
                   }
                 >
                   <Route path="/" element={<Landing />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
+                  <Route element={<AuthRedirect />}>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                  </Route>
                 </Route>
 
                 <Route

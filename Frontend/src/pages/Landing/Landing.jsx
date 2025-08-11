@@ -70,12 +70,6 @@ const Landing = () => {
                 <span>Get Started</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
-              <Link
-                to="/calendar"
-                className="inline-flex items-center space-x-2 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-600 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300"
-              >
-                <span>View Demo</span>
-              </Link>
             </motion.div>
 
             {/* Animated Illustration */}

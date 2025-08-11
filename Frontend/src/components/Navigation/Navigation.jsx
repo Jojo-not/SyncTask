@@ -3,16 +3,23 @@ import { motion } from "framer-motion";
 import { CheckSquare, LogOut, User } from "lucide-react";
 import { useAuth } from "../../context/AuthProvider";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
+import toast from "react-hot-toast";
 
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const isAuthenticated = !!user;
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Failed to logout");
+      console.error("Logout error:", error);
+    }
   };
 
   return (

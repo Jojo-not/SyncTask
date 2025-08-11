@@ -10,10 +10,6 @@ export const AuthProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   const checkAuth = async () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -24,10 +20,14 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         localStorage.removeItem("token");
         delete axios.defaults.headers.common["Authorization"];
+        setUser(null);
       }
     }
     setLoading(false);
   };
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const login = async (email, password) => {
     const response = await axios.post("http://127.0.0.1:8000/api/login", {
@@ -50,7 +50,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        loading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

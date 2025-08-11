@@ -10,12 +10,22 @@ export default function RequireAuth({ children }) {
     return <div>Loading...</div>;
   }
 
-  // If user is NOT logged in, redirect to login (but avoid redirect loop)
+  // If user is NOT logged in
   if (!user) {
+    // Let public routes show without redirect
     if (location.pathname === "/login" || location.pathname === "/signup") {
-      return children; // Let public routes show without redirect
+      return children;
     }
-    return <Navigate to="/dashboard" state={{ from: location }} replace />;
+    // Redirect to login, saving the route they came from
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If logged in and tries to access login/signup, redirect to dashboard
+  if (
+    user &&
+    (location.pathname === "/login" || location.pathname === "/signup")
+  ) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   // If authenticated, render children
