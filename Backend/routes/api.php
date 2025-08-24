@@ -18,4 +18,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tasks', [TasksController::class, 'store']);
     Route::put('/tasks/{id}', [TasksController::class, 'update']);
     Route::delete('/tasks/{id}', [TasksController::class, 'destroy']);
+    Route::get('/{userId}/tasks', [TasksController::class, 'getUserTasks']);
+    Route::patch('/tasks/{id}/status', [TasksController::class, 'updateStatus']);
+    Route::get('/tasks/stats', [TasksController::class, 'getTaskStats']); 
+    Route::get('/tasks/search', [TasksController::class, 'search']);
+    Route::get('/tasks/priority', [TasksController::class, 'getTasksByPriority']);
+    Route::get('/tasks/status', [TasksController::class, 'getTasksByStatus']);
+    Route::get('/tasks/due-today', [TasksController::class, 'getTasksDueToday']);
+    Route::get('/tasks/overdue', [TasksController::class, 'getOverdueTasks']);
+    Route::get('/tasks/priority/{priority}', [TasksController::class, 'getTasksByPriority']);
+    Route::get('/tasks/status/{status}', [TasksController::class, 'getTasksByStatus']);
+    Route::get('/tasks/due-today', [TasksController::class, 'getTasksDueToday']);
+    Route::get('/tasks/overdue', [TasksController::class, 'getOverdueTasks']);  
 });

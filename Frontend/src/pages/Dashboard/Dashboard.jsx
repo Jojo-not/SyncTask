@@ -17,26 +17,41 @@ const Dashboard = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
 
-  const filteredTasks = tasks.filter((task) => {
-    const matchesSearch =
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" || task.status === filterStatus;
-    const matchesPriority =
-      filterPriority === "all" || task.priority === filterPriority;
+  const filteredTasks =
+    tasks?.filter((task) => {
+      if (!task || !task.title || !task.description) return false;
 
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+      const matchesSearch =
+        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        filterStatus === "all" || task.status === filterStatus;
+      const matchesPriority =
+        filterPriority === "all" || task.priority === filterPriority;
 
-  const handleTaskSubmit = (taskData) => {
-    if (editingTask) {
-      updateTask(editingTask.id, taskData);
-    } else {
-      addTask(taskData);
+      return matchesSearch && matchesStatus && matchesPriority;
+    }) || [];
+
+  const taskStats = {
+    total: tasks?.length || 0,
+    completed: tasks?.filter((t) => t?.status === "completed").length || 0,
+    pending: tasks?.filter((t) => t?.status === "pending").length || 0,
+    in_progress: tasks?.filter((t) => t?.status === "in_progress").length || 0,
+  };
+
+  const handleTaskSubmit = async (taskData) => {
+    try {
+      if (editingTask) {
+        await updateTask(editingTask.id, taskData);
+      } else {
+        await addTask(taskData);
+      }
+      setIsModalOpen(false);
+      setEditingTask(null);
+    } catch (error) {
+      console.error("Error submitting task:", error);
+      // Optionally add error handling UI here
     }
-    setIsModalOpen(false);
-    setEditingTask(null);
   };
 
   const handleEdit = (task) => {
@@ -47,13 +62,6 @@ const Dashboard = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingTask(null);
-  };
-
-  const taskStats = {
-    total: tasks.length,
-    completed: tasks.filter((t) => t.status === "completed").length,
-    pending: tasks.filter((t) => t.status === "pending").length,
-    inProgress: tasks.filter((t) => t.status === "in-progress").length,
   };
 
   return (
@@ -94,7 +102,7 @@ const Dashboard = () => {
           },
           {
             label: "In Progress",
-            value: taskStats.inProgress,
+            value: taskStats.in_progress,
             color: "bg-warning-500",
             icon: "🚀",
           },
@@ -156,7 +164,7 @@ const Dashboard = () => {
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
-            <option value="in-progress">In Progress</option>
+            <option value="in_progress">In Progress</option>
             <option value="completed">Completed</option>
           </select>
 
