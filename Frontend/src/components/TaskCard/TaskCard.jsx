@@ -27,7 +27,7 @@ const TaskCard = ({ task, onEdit, onDelete, onMarkComplete }) => {
     switch (status) {
       case "completed":
         return "text-success-600 bg-success-50 dark:bg-success-900/20";
-      case "in-progress":
+      case "in_progress":
         return "text-primary-600 bg-primary-50 dark:bg-primary-900/20";
       case "pending":
         return "text-warning-600 bg-warning-50 dark:bg-warning-900/20";

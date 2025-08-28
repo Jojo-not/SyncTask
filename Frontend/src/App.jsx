@@ -18,6 +18,7 @@ import Signup from "./pages/Signup/Signup";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
+import Settings from "./pages/Settings/Settings";
 
 function AppContent() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -75,6 +76,7 @@ function AppContent() {
                 >
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Route>
               </Routes>
             </Router>
