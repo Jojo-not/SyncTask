@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TasksController;
 
@@ -29,5 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tasks/priority/{priority}', [TasksController::class, 'getTasksByPriority']);
     Route::get('/tasks/status/{status}', [TasksController::class, 'getTasksByStatus']);
     Route::get('/tasks/due-today', [TasksController::class, 'getTasksDueToday']);
-    Route::get('/tasks/overdue', [TasksController::class, 'getOverdueTasks']);  
+    Route::get('/tasks/overdue', [TasksController::class, 'getOverdueTasks']);
+      
+    Route::get('/profile', [SettingController::class, 'getProfile']);
+    Route::post('/settings/email', [SettingController::class, 'updateEmail']);
+    Route::post('/settings/password', [SettingController::class, 'updatePassword']);
 });

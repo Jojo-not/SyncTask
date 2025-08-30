@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, Save, AlertCircle } from "lucide-react";
+import { SettingProvider } from "../../context/SettingContext";
 
 export default function Settings() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ export default function Settings() {
     newPassword: "",
     confirmPassword: "",
   });
+  const { changeEmail, changePassword } = useContext(SettingProvider);
 
   const [loading, setLoading] = useState({
     email: false,
@@ -27,25 +29,6 @@ export default function Settings() {
     message: "",
   });
 
-  // Fetch current user profile
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const { data } = await api.get("/api/user");
-        setFormData((prev) => ({ ...prev, email: data.email || "" }));
-      } catch (error) {
-        showNotification("error", "Failed to load user profile");
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
-
-  const showNotification = (type, message) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification({ type: null, message: "" }), 5000);
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -54,55 +37,62 @@ export default function Settings() {
   const handleEmailUpdate = async (e) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, email: true }));
-
-    try {
-      await api.put("/user/profile-information", {
-        email: formData.newEmail.trim(),
+    const response = await changeEmail({ email: formData.newEmail });
+    if (response.success) {
+      setNotification({
+        type: "success",
+        message: "Email updated successfully!",
       });
-
       setFormData((prev) => ({
         ...prev,
-        email: formData.newEmail,
+        email: response.settings.email,
         newEmail: "",
       }));
-      showNotification("success", "Email updated successfully");
-    } catch (error) {
-      showNotification(
-        "error",
-        error?.response?.data?.message || "Failed to update email"
-      );
-    } finally {
-      setLoading((prev) => ({ ...prev, email: false }));
+    } else {
+      setNotification({ type: "error", message: response.error });
     }
+    setLoading((prev) => ({ ...prev, email: false }));
   };
-
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-    setLoading((prev) => ({ ...prev, password: true }));
-
-    try {
-      await api.put("/user/password", {
-        current_password: formData.currentPassword,
-        password: formData.newPassword,
-        password_confirmation: formData.confirmPassword,
+    if (formData.newPassword !== formData.confirmPassword) {
+      setNotification({
+        type: "error",
+        message: "New passwords do not match!",
       });
-
+      return;
+    }
+    setLoading((prev) => ({ ...prev, password: true }));
+    const response = await changePassword({
+      currentPassword: formData.currentPassword,
+      newPassword: formData.newPassword,
+    });
+    if (response.success) {
+      setNotification({
+        type: "success",
+        message: "Password updated successfully!",
+      });
       setFormData((prev) => ({
         ...prev,
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       }));
-      showNotification("success", "Password updated successfully");
-    } catch (error) {
-      showNotification(
-        "error",
-        error?.response?.data?.message || "Failed to update password"
-      );
-    } finally {
-      setLoading((prev) => ({ ...prev, password: false }));
+    } else {
+      setNotification({ type: "error", message: response.error });
     }
+    setLoading((prev) => ({ ...prev, password: false }));
   };
+
+  useEffect(() => {
+    // Clear notifications after 5 seconds
+    if (notification.message) {
+      const timer = setTimeout(() => {
+        setNotification({ type: null, message: "" });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   return (
     <motion.div
